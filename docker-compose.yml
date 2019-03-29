@@ -1,0 +1,23 @@
+version: '3'
+services:
+  web:
+    image: nginx
+    restart: on-failure
+    ports:
+     - "8011:80"
+    volumes:
+      - ./code:/var/www/html
+      - ./infra/nginx-internal/custom.conf:/etc/nginx/conf.d/custom.conf
+  php:
+    image: phpdockerio/php7-fpm
+    build:
+      context: .
+      dockerfile: ./infra/php/Dockerfile
+      args:
+        SRC_DIR: ./code
+        DOCKER_IMAGE_CONTEXT: infra/php
+    restart: on-failure
+    volumes:
+      - ./code:/var/www/html
+    ports:
+      - 9000

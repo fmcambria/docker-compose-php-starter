@@ -21,3 +21,13 @@ services:
       - ./code:/var/www/html
     ports:
       - 9000
+  db:
+    image: mariadb
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: mysecret
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8012:8080

@@ -11,3 +11,7 @@ This is a simple php7 application starter with docker & docker-compose.
 
 Modify ./infra/nginx-internal/custom.conf for custom nginx configs.
 
+### Execution
+
+Just run **docker-compose up -d**
+

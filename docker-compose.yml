@@ -2,23 +2,32 @@ version: '3'
 services:
   web:
     image: nginx
+    environment:
+     - VIRTUAL_HOST=fmc
+    depends_on:
+     - php
     restart: on-failure
     ports:
-     - "8011:80"
+     - 80
+    networks:
+     - reverse-proxy
+     - backnet
     volumes:
-      - ./code:/var/www/html
+      - /var/www/html:/var/www/html
       - ./infra/nginx-internal/custom.conf:/etc/nginx/conf.d/custom.conf
   php:
     image: phpdockerio/php7-fpm
+    networks:
+      - backnet
     build:
       context: .
       dockerfile: ./infra/php/Dockerfile
       args:
-        SRC_DIR: ./code
+        SRC_DIR: /var/www/html
         DOCKER_IMAGE_CONTEXT: infra/php
     restart: on-failure
     volumes:
-      - ./code:/var/www/html
+      - /var/www/html:/var/www/html
     ports:
       - 9000
   db:
@@ -31,3 +40,9 @@ services:
     restart: always
     ports:
       - 8012:8080
+networks:
+  reverse-proxy:
+    external:
+      name: reverse-proxy
+  backnet:
+    driver: bridge
